@@ -5,7 +5,6 @@ import time
 import argparse
 import re
 
-
 prompt = """
 '''
 This task involves identifying the event concept for a given trigger span, including event type, type description and similar examples. Based on the provided sentence and trigger span, generate (1) event type (as fine-grained as possible, matching the span’s context); (2) description (defining the category); (3) examples (illustrating similar triggers)
@@ -116,9 +115,8 @@ def get_length(file):
 
 
 def ensure_dir_exists(directory_path):
-    # Check if the file exists
+    # Check whether the directory exists
     os.makedirs(directory_path, exist_ok=True)
-        
 
 
 parser = argparse.ArgumentParser()
@@ -128,7 +126,7 @@ output_dir = "dataset_ed_query"
 task = "ED"
 parser.add_argument('--file_dirs', nargs='+', type=str,
                     default=["geneva", "m2e2", "mlee"])
-parser.add_argument('--sets', nargs='+', type=str, default=['train','test'])
+parser.add_argument('--sets', nargs='+', type=str, default=['train', 'test'])
 args = parser.parse_args()
 sets = args.sets
 file_dirs = args.file_dirs
@@ -137,13 +135,13 @@ retry_delay = 5
 
 for file_dir in file_dirs:
     for set_type in sets:
-        # 修改 输入文件
+        # Modify input file
         # input_file = "dataset/ACE2005/test.jsonl"
-        input_file = os.path.join(base_dir, task, file_dir,f"{set_type}_raw.jsonl")
-        # 修改 输出文件
+        input_file = os.path.join(base_dir, task, file_dir, f"{set_type}_raw.jsonl")
+        # Modify output file
         # output_file = "dataset/ACE2005/test_out.jsonl"
         ensure_dir_exists(os.path.join(output_dir, task, file_dir))
-        output_file = os.path.join(base_dir, task, file_dir, f"{set_type}_raw_query.jsonl")
+        output_file = os.path.join(output_dir, task, file_dir, f"{set_type}_raw_query.jsonl")
         with open(input_file, "r") as f_r, open(output_file, "w") as f_w:
             file_length = get_length(input_file)
             length = 1
@@ -155,9 +153,9 @@ for file_dir in file_dirs:
                 pred_evt = line["pred_events"]
                 gold_evt = []
                 span2type = {}
-                for evt in line["events"]:  # 将不是golden span的pred span，进行概念化
+                for evt in line["events"]:  # Conceptualize predicted spans that are not golden spans
                     evt_span = evt["trigger"]
-                    if evt["type"] != "Event":  # 有event type的是原始golden，没有的是补标的，不属于golden
+                    if evt["type"] != "Event":  # Spans with event types are original golden
                         gold_evt.append(evt_span)
                         span2type[evt_span] = evt["type"]
                 line["pred_events_concept"] = []
@@ -166,7 +164,7 @@ for file_dir in file_dirs:
                         evt_type = span2type[evt]
                     else:
                         evt_type = "Other"
-                    prompt = prompt.format(sentence=sentence, trigger_span=evt)
+                    prompt_extraction = prompt.format(sentence=sentence, trigger_span=evt)
                     line["pred_events_concept"].append({"trigger": evt, "type": evt_type, "query": prompt_extraction})
                 f_w.write(json.dumps(line, ensure_ascii=False) + '\n')
                 length += 1

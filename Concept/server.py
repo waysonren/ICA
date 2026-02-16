@@ -14,15 +14,15 @@ args = parser.parse_args()
 
 app = FastAPI()
 
-# 优化后的引擎参数
+# Optimized engine parameters
 engine_args = AsyncEngineArgs(
     model=args.model,
     tensor_parallel_size=1,
-    max_model_len=2048,  # 限制上下文长度
-    gpu_memory_utilization=0.9,  # 预留 20% 显存
-    dtype="float16",  # FP16 推理
-    max_num_seqs=32,  # 最大并发请求数
-    max_num_batched_tokens=2048,  # 每批最大 token 数
+    max_model_len=2048,  # Limit the context length
+    gpu_memory_utilization=0.9,  # Reserve 10% GPU memory
+    dtype="float16",  # FP16 inference
+    max_num_seqs=32,  # Maximum number of concurrent requests
+    max_num_batched_tokens=2048,  # Maximum number of tokens per batch
     trust_remote_code=True,
     device=f"cuda:{args.device}"
 )
@@ -33,7 +33,7 @@ engine = AsyncLLMEngine.from_engine_args(engine_args)
 async def generate(request: Request):
     data = await request.json()
     prompt = data.get("prompt")
-    max_tokens = data.get("max_tokens", 512)  # 默认 256
+    max_tokens = data.get("max_tokens", 512)  # Default 512
 
     sampling_params = SamplingParams(
         temperature=0.7,

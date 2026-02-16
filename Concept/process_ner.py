@@ -12,7 +12,7 @@ Ensure the entity type precisely reflects the connotation of the entity span in 
 '''
 
 # Here are some examples:
-# Here is a example:
+# Here is an example:
 sentence = "Vinken will join the board as a nonexecutive director Nov 29."
 entity_span = "Vinken"
 
@@ -119,13 +119,11 @@ def get_length(file):
 
 
 def ensure_dir_exists(directory_path):
-    # Check if the file exists
+    # Check whether the directory exists
     os.makedirs(directory_path, exist_ok=True)
-        
 
 
-
-# 修改 system_prompt
+# Modify system_prompt
 # system_prompt = "You are a highly skilled assistant at identifying entity type for entity span based on provided sentences. Below is an example and a query for conceptualization. Please complete it in the form of Python class code."
 
 parser = argparse.ArgumentParser()
@@ -144,10 +142,10 @@ retry_delay = 5
 
 for file_dir in file_dirs:
     for set_type in sets:
-        # 修改 输入文件
+        # Modify input file
         # input_file = "dataset/ACE2005/test.jsonl"
         input_file = os.path.join(base_dir, task, file_dir, f"{set_type}_raw.jsonl")
-        # 修改 输出文件
+        # Modify output file
         # output_file = "dataset/ACE2005/test_out.jsonl"
         ensure_dir_exists(os.path.join(output_dir, task, file_dir))
         output_file = os.path.join(output_dir, task, file_dir, f"{set_type}_raw_query.jsonl")
@@ -162,9 +160,10 @@ for file_dir in file_dirs:
                 pred_ent = line["pred_entities"]
                 gold_ent = []
                 span2type = {}
-                for ent in line["entities"]:  # 将不是golden span的pred span，进行概念化
+                line["pred_entities_concept"] = []
+                for ent in line["entities"]:  # Conceptualize predicted spans that are not golden spans
                     ent_span = ent["name"]
-                    if ent["pos"]:  # 有pos参数的是原始golden，没有pos参数的是补标的，不属于golden
+                    if ent.get("pos"):  # Entities with a pos field are original golden (Depends on your datasets format)
                         gold_ent.append(ent_span)
                         span2type[ent_span] = ent["type"]
                 for ent in pred_ent:

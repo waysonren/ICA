@@ -105,4 +105,18 @@ You are free to share and adapt the material, provided appropriate credit is giv
 If you find this work useful, please cite:
 
 ```bibtex
-todo
+@inproceedings{ren-etal-2026-identify,
+author = {Ren, Weicheng and Li, Zixuan and Bai, Long and Jin, Xiaolong and Guo, Jiafeng and Cheng, Xueqi},
+title = {Identify-Conceptualize-Align: A Schema-Adaptive Framework for Unified Entity Recognition and Event Detection},
+year = {2026},
+isbn = {9798400722929},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3773966.3777998},
+doi = {10.1145/3773966.3777998},
+booktitle = {Proceedings of the Nineteenth ACM International Conference on Web Search and Data Mining},
+pages = {552–562},
+numpages = {11},
+location = {USA},
+series = {WSDM '26}
+}
